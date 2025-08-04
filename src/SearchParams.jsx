@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import Pet from "./Pet";
+import useBreedList from "./useBreedList";
 
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchParams = () => {
-  const [location, setLocation] = useState("Jakarta, ID");
+  const [location, setLocation] = useState("Seattle, WA");
   const [animal, setAnimal] = useState("");
   const [breed, setBreed] = useState("");
-  const [pets, setPets] = useState("");
+  const [pets, setPets] = useState([]);
   // usestate mengembalikan dua variable dalam array, dimana var 1 adalah valuenya, dan var 2 adalah fungsi untuk memperbarui valuenya.
 
-  const breeds = [];
+  //   const breeds = []; ganti dengan line yg dibawah
+  const [breeds] = useBreedList(animal);
 
   useEffect(() => {
     requestPets();
@@ -18,7 +20,7 @@ const SearchParams = () => {
 
   async function requestPets() {
     const res = await fetch(
-      `https://pets-v2.dev-apis.com/pets?.animal=${animal}&location=${location}&breed=${breed}`
+      `https://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
     ); // fetch ini akan mengembalikan sebuah promise (pending -> kita sedang menghubungi server, fulfilled -> kita menerima response dari server, rejected -> gagal menghubungi server)
 
     const json = await res.json();
@@ -84,7 +86,14 @@ const SearchParams = () => {
         <button>Submit</button>
       </form>
       {pets.map((pet) => {
-        <Pet name={pet.name} animal={pet.animal} breed={pet.breed} />;
+        return (
+          <Pet
+            name={pet.name}
+            animal={pet.animal}
+            breed={pet.breed}
+            key={pet.id}
+          />
+        );
       })}
     </div>
   );
