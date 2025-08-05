@@ -32,7 +32,12 @@ const SearchParams = () => {
 
   return (
     <div className="search-params">
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault(); // mencegah reload, dan tidak menggunakan metode submit yg disediakan oleh form tapi menggunakan metode submitnya kita yaitu pake requestPets()
+          requestPets();
+        }}
+      >
         <label htmlFor="location">
           Location
           <input
