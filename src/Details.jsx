@@ -1,12 +1,15 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
 import fetchPet from "./fetchPet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
+import Modal from "./Modal";
 
 const Details = () => {
   const { id } = useParams();
+  const [showModal, setShowModal] = useState(false);
   // http://localhost:5173/details/:id
   // : --> merupakan sebuah transformator dimana kata yg ditambahkan setelahnya akan diubah menjadi variable. In this case, kita memiliki variable "id"
 
@@ -32,6 +35,17 @@ const Details = () => {
         <h2>{`${pet.animal} - ${pet.breed}. ${pet.city}, ${pet.state}`}</h2>
         <button>Adopsi si {pet.name}?</button>
         <p>{pet.description}</p>
+        {showModal ? (
+          <Modal>
+            <div>
+              <h1>Apakah kamu ingin mengadopsi hewan ini?</h1>
+              <div className="buttons">
+                <button>Yes</button>
+                <button onClick={() => setShowModal(false)}>No</button>
+              </div>
+            </div>
+          </Modal>
+        ) : null}
       </div>
     </div>
   );
