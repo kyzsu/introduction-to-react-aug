@@ -39,4 +39,6 @@ export default function useBreedList(animal) {
   // ternary operator pada umumnya, kondisi ? value true : value false
 
   // results?.data?.breeds ?? [] <--> results?.data?.breeds ? results?.data?.breeds : []
+
+  // ? --> meminta JS di-hold dulu proses returnnya. karena masih menunggu respon dari pada server. Yang bisa saja menambahkan value/properti data dan breeds.
 }
