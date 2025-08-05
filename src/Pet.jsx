@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Pet = (props) => {
   const { name, animal, breed, city, state, images, id } = props; // deconstruct property, lego yang udah jadi, kita ambil pecahannya satu-satu
 
@@ -8,7 +10,8 @@ const Pet = (props) => {
   }
 
   return (
-    <a href={`/details/${id}`} className="pet">
+    <Link to={`/details/${id}`} className="pet">
+      {/* to itu equivalen dari href, dia memiliki fungsi yg sama seperti href di anchor tag */}
       <div className="image-container">
         <img src={defaultImage} alt={name} />
       </div>
@@ -18,7 +21,7 @@ const Pet = (props) => {
           {animal}-{breed} {city} ,{state}
         </h2>
       </div>
-    </a>
+    </Link>
   );
 };
 
