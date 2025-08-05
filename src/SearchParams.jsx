@@ -1,33 +1,44 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import useBreedList from "./useBreedList";
 import Results from "./Results";
+import fetchSearch from "./fetchSearch";
 
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchParams = () => {
-  const [location, setLocation] = useState("Seattle, WA");
+  // const [location, setLocation] = useState("Seattle, WA");
   const [animal, setAnimal] = useState("");
-  const [breed, setBreed] = useState("");
-  const [pets, setPets] = useState([]);
+  // const [breed, setBreed] = useState("");
+  // const [pets, setPets] = useState([]);
+  const [requestParams, setRequestParams] = useState({
+    location: "",
+    breed: "",
+    animal: "",
+  });
   // usestate mengembalikan dua variable dalam array, dimana var 1 adalah valuenya, dan var 2 adalah fungsi untuk memperbarui valuenya.
 
   //   const breeds = []; ganti dengan line yg dibawah
   const [breeds] = useBreedList(animal);
 
-  useEffect(() => {
-    requestPets();
-  }, []); // arg 1 (callback) -> callback adalah fungsi/method yang ingin kita jalankan setelah web ke-render untuk pertama kalinya, arg 2 (dependency) -> trigger
+  const results = useQuery(["search", requestParams], fetchSearch);
 
-  async function requestPets() {
-    const res = await fetch(
-      `https://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
-    ); // fetch ini akan mengembalikan sebuah promise (pending -> kita sedang menghubungi server, fulfilled -> kita menerima response dari server, rejected -> gagal menghubungi server)
+  const pets = results?.data?.pets ?? [];
 
-    const json = await res.json();
+  // useEffect(() => {
+  //   requestPets();
+  // }, []); // arg 1 (callback) -> callback adalah fungsi/method yang ingin kita jalankan setelah web ke-render untuk pertama kalinya, arg 2 (dependency) -> trigger
 
-    setPets(json.pets);
-  }
+  // async function requestPets() {
+  //   const res = await fetch(
+  //     `https://pets-v2.dev-apis.com/pets?animal=${animal}&location=${location}&breed=${breed}`
+  //   ); // fetch ini akan mengembalikan sebuah promise (pending -> kita sedang menghubungi server, fulfilled -> kita menerima response dari server, rejected -> gagal menghubungi server)
+
+  //   const json = await res.json();
+
+  //   setPets(json.pets);
+  // }
 
   //   console.log("event pada input: ", location);
 
@@ -36,7 +47,18 @@ const SearchParams = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault(); // mencegah reload, dan tidak menggunakan metode submit yg disediakan oleh form tapi menggunakan metode submitnya kita yaitu pake requestPets()
-          requestPets();
+          // requestPets();
+
+          const formData = new FormData(e.target);
+          const object = {
+            animal: formData.get("animal") ?? "",
+            breed: formData.get("breed") ?? "",
+            location: formData.get("location") ?? "",
+          };
+
+          // object --> gabungan dari beberapa key-value pair
+
+          setRequestParams(object);
         }}
       >
         <label htmlFor="location">
@@ -44,23 +66,20 @@ const SearchParams = () => {
           <input
             type="text"
             id="location"
-            value={location}
+            name="location"
             placeholder="Location"
-            onChange={(e) => setLocation(e.target.value)}
           />
         </label>
         <label htmlFor="animal">
           Animal
           <select
             id="animal"
-            value={animal}
+            name="animal"
             onChange={(e) => {
               setAnimal(e.target.value);
-              setBreed("");
             }}
             onBlur={(e) => {
               setAnimal(e.target.value);
-              setBreed("");
             }}
           >
             <option />
@@ -73,14 +92,7 @@ const SearchParams = () => {
         </label>
         <label htmlFor="breed">
           Breed
-          <select
-            disabled={!breeds.length}
-            name="breed"
-            id="breed"
-            value={breed}
-            onChange={(e) => setBreed(e.target.value)}
-            onBlur={(e) => setBreed(e.target.value)}
-          >
+          <select disabled={!breeds.length} name="breed" id="breed">
             <option />
             {breeds.map((breed) => (
               <option value={breed} key={breed}>
