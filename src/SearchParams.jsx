@@ -45,8 +45,9 @@ const SearchParams = () => {
   //   console.log("event pada input: ", location);
 
   return (
-    <div className="search-params">
+    <div className="my-0 mx-auto w-11/12">
       <form
+        className="p-10 mb-10 rounded-lg bg-gray-600 shadow-lg flex flex-col justify-center items-center"
         onSubmit={(e) => {
           e.preventDefault(); // mencegah reload, dan tidak menggunakan metode submit yg disediakan oleh form tapi menggunakan metode submitnya kita yaitu pake requestPets()
           // requestPets();
@@ -75,12 +76,14 @@ const SearchParams = () => {
             id="location"
             name="location"
             placeholder="Location"
+            className="w-60 mb-5 block"
           />
         </label>
         <label htmlFor="animal">
           Animal
           <select
             id="animal"
+            className="w-60 mb-5 block"
             name="animal"
             onChange={(e) => {
               setAnimal(e.target.value);
@@ -99,7 +102,12 @@ const SearchParams = () => {
         </label>
         <label htmlFor="breed">
           Breed
-          <select disabled={!breeds.length} name="breed" id="breed">
+          <select
+            disabled={!breeds.length}
+            className="w-60 mb-5 block disabled:opacity-50"
+            name="breed"
+            id="breed"
+          >
             <option />
             {breeds.map((breed) => (
               <option value={breed} key={breed}>
@@ -108,7 +116,9 @@ const SearchParams = () => {
             ))}
           </select>
         </label>
-        <button>Submit</button>
+        <button className="rounded px-6 py-2 text-white hover:opacity-50 border-none bg-orange-500">
+          Submit
+        </button>
       </form>
       <Results pets={pets} />
     </div>
