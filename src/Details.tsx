@@ -7,16 +7,21 @@ import fetchPet from "./fetchPet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import AdoptedPetContext from "./AdoptedPetContext";
+import { PetAPIResponse } from "./APIResponsesTypes";
 
 const Details = () => {
   const { id } = useParams();
+  if (!id) {
+    throw new Error("tidak ada id yang disertakan");
+  }
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  const [, setAdoptedPet] = useContext(AdoptedPetContext);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-unsafe-assignment
+  const [_, setAdoptedPet] = useContext(AdoptedPetContext);
   // http://localhost:5173/details/:id
   // : --> merupakan sebuah transformator dimana kata yg ditambahkan setelahnya akan diubah menjadi variable. In this case, kita memiliki variable "id"
 
-  const results = useQuery(["details", id], fetchPet);
+  const results = useQuery<PetAPIResponse>(["details", id], fetchPet);
   // useQuery menerima dua arg, arg 1 --> queryKey, arg 2 --> fungsi/methodnya
 
   // loading state, apabila isLoading adalah true, maka kita kembalikan HTML untuk menginfokan bahwa sedang fetching.
@@ -28,7 +33,11 @@ const Details = () => {
     );
   }
 
-  const pet = results.data.pets[0];
+  const pet = results?.data?.pets[0];
+
+  if (!pet) {
+    throw new Error("pet tidak ditemukan!");
+  }
 
   return (
     <div className="details">
@@ -65,10 +74,10 @@ const Details = () => {
 
 // export default Details;
 
-export default function DetailsErrorBoundary(props) {
+export default function DetailsErrorBoundary() {
   return (
     <ErrorBoundary>
-      <Details {...props} />
+      <Details />
     </ErrorBoundary>
   );
 }

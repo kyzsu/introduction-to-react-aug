@@ -1,7 +1,7 @@
-import { Component } from "react";
+import { Component, ErrorInfo, ReactElement } from "react";
 import { Link } from "react-router-dom";
 
-class ErrorBoundary extends Component {
+class ErrorBoundary extends Component<{ children: ReactElement }> {
   // default value dari pada haserror harus false, kalo gak nanti halaman yang ingin kita tampilkan tidak muncul melainkan halaman error messagenya
   state = { hasError: false };
 
@@ -10,7 +10,7 @@ class ErrorBoundary extends Component {
     return { hasError: true };
   }
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error: Error, info: ErrorInfo) {
     console.error(
       "Error Boundary telah menangkap error, detail sbg berikut: ",
       error,

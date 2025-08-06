@@ -1,8 +1,12 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { Component } from "react";
+import { Component, MouseEvent } from "react";
 
-class Carousel extends Component {
+export interface IProps {
+  images: string[];
+}
+
+class Carousel extends Component<IProps> {
   // state --> seperti useState di functional component. tugasnya untuk menyimpan var
   state = {
     active: 0,
@@ -13,10 +17,18 @@ class Carousel extends Component {
     images: ["http://pets-images.dev-apis.com/pets/none.jpg"],
   };
 
-  handleIndexClick = (event) => {
-    this.setState({
-      active: +event.target.dataset.index,
-    });
+  // infokan handleIndexClick bahwa event yang kita maksudkan adalah sebuah event dengan mouse/cursor pada html element.
+  handleIndexClick = (event: MouseEvent<HTMLElement>) => {
+    // jika target event tersebut bukan sebuah element HTML, maka tidak usah dipedulikan.
+    if (!(event.target instanceof HTMLElement)) {
+      return;
+    }
+
+    if (event.target.dataset.index) {
+      this.setState({
+        active: +event.target.dataset.index,
+      });
+    }
   };
 
   // render --> return fn
